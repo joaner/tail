@@ -1,0 +1,40 @@
+<!doctype html>
+<html>
+  <head>
+    <title>{%=o.title%}</title>
+    <style>
+    html, body {
+      padding: 0;
+      margin: 0;
+    }
+    .container header {
+      border-bottom: 1px solid #DDD;
+      background-color: #333;
+      color: #FFF;
+    }
+    .container header h1 {
+      font-size: 1rem;
+      font-weight: normal;
+      line-height: 1;
+      margin: 0;
+    }
+    .container>header, .container>article {
+      padding: .5rem 1rem;
+    }
+    .container>article pre {
+      line-height: 1.8;
+      font-size: 1rem;
+    }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>tail {%=o.realfile%}</h1>
+      </header>
+      <article>
+        <pre class="content">{%=o.content%}</pre>
+      </article>
+    </div>
+  </body>
+</html>

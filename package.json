@@ -1,0 +1,33 @@
+{
+  "name": "tailview",
+  "version": "0.0.1",
+  "description": "tail command browser implementation",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon ./src/client/index.js",
+    "start": "node ./src/client/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/joaner/tail.git"
+  },
+  "keywords": [
+    "tail",
+    "websocket"
+  ],
+  "author": "joaner <joaner1206@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/joaner/tail/issues"
+  },
+  "homepage": "https://github.com/joaner/tail#readme",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0"
+  },
+  "dependencies": {
+    "blueimp-tmpl": "^3.11.0",
+    "koa": "^2.5.1"
+  }
+}
