@@ -33,8 +33,17 @@
         <h1>tail {%=o.realfile%}</h1>
       </header>
       <article>
-        <pre class="content">{%=o.content%}</pre>
+        <pre id="content">{%=o.content%}</pre>
       </article>
     </div>
+    <script>
+    const url = `ws://${location.host}/${location.pathname}`
+    const socket = new WebSocket(url)
+    const content = document.getElementById('content')
+
+    socket.onmessage = (message) => {
+      content.textContent = message.data
+    }
+    </script>
   </body>
 </html>
