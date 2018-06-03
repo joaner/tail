@@ -1,18 +1,25 @@
 const fs = require('fs')
 const path = require('path')
-const net = require('net')
 const tmpl = require('blueimp-tmpl')
+const WebSocket = require('ws')
 const Koa = require('koa')
 const app = new Koa()
 
 const port = process.env.PORT || 8080
 const rootPath = process.env.ROOT_PATH || '/'
 
-const socket = new net.Server((sock) => {
-  console.log(sock)
+const websocket = new WebSocket.Server({ noServer: true })
+websocket.on('connection', (ws) => {
+  ws.on('message', (data) => {
+    ws.send(`length: ${data.length}`)
+  })
 })
 
 app.use(async ctx => {
+  if (ctx.originalUrl === '/socket') {
+    return
+  }
+
   const html = fs.readFileSync('./public/index.html', { encoding: 'utf8' })
 
   const filePath = ctx.request.path
@@ -27,9 +34,13 @@ app.use(async ctx => {
   ctx.body = tmpl(html, data)
 })
 
-socket.listen(port, (handle) => {
-  // TODO 两个服务监听统一端口，目前net.Server会覆盖koa
-  app.listen(port + 1, () => {
-    console.log(`app listen at ${port}`)
+
+const handle = app.listen(port, () => {
+  console.log(`app listen at ${port}`)
+})
+
+handle.on('upgrade', (request, socket, head) => {
+  websocket.handleUpgrade(request, socket, head, (ws) => {
+    websocket.emit('connection', ws, request)
   })
 })
