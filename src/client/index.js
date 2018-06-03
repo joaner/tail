@@ -1,6 +1,7 @@
 const fs = require('fs')
 const path = require('path')
 const tmpl = require('blueimp-tmpl')
+const url = require('url')
 const WebSocket = require('ws')
 const Koa = require('koa')
 const app = new Koa()
@@ -12,26 +13,23 @@ const streams = {}
 const offsets = {}
 const clients = {}
 
+const MAX_READ_LENGTH = 1000
+
 const websocket = new WebSocket.Server({ noServer: true })
 websocket.on('connection', (ws, request) => {
-  const key = request.url
+  const parse = url.parse(request.url)
+  const params = new URLSearchParams(parse.query)
+
+  const key = parse.pathname
   if (!clients[key]) {
     clients[key] = []
 
-    const realfile = path.join(rootPath, request.url)
+    const realfile = path.join(rootPath, parse.pathname)
     fs.watch(realfile, () => {
-      console.log(offsets, key)
-      const offset = offsets[key] || 0
-
-      /* TODO offset erro
-      fs.readSync(fd, buffer, 0, 1000)
-      content = buffer.toString('utf8')
-      const buffer = Buffer.from('', 'utf8')
-      const fd = fs.openSync(realfile, 'r')
-      */
-      const content = fs.readFileSync(realfile, { encoding: 'utf8' })
-
-      offsets[key] = offset + Buffer.byteLength(content)
+      const fd = Number(params.get('fd'))
+      const buffer = Buffer.alloc(MAX_READ_LENGTH)
+      const length = fs.readSync(fd, buffer, 0, MAX_READ_LENGTH, null)
+      content = buffer.slice(0, length).toString('utf8')
 
       if (clients[key]) {
         clients[key].forEach(client => {
@@ -56,14 +54,19 @@ app.use(async ctx => {
   const key = filePath
   const realfile = path.join(rootPath, filePath)
 
-  const content = fs.readFileSync(realfile)
-  offsets[key] = Buffer.byteLength(content)
+  const fd = fs.openSync(realfile, 'r')
+  const buffer = Buffer.alloc(MAX_READ_LENGTH)
+  const length = fs.readSync(fd, buffer, 0, MAX_READ_LENGTH, null)
+
+  content = buffer.slice(0, length).toString('utf8')
+  offsets[key] = buffer.length
 
   const data = {
     title: ctx.response.path,
     stats: fs.statSync(realfile),
+    fd,
     realfile,
-    extension: path.extname(realfile),
+    extname: path.extname(realfile),
     content,
   }
   ctx.body = tmpl(html, data)

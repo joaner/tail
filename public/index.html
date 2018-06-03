@@ -21,9 +21,12 @@
     .container>header, .container>article {
       padding: .5rem 1rem;
     }
-    .container>article pre {
+    .container>article ol {
       line-height: 1.8;
       font-size: 1rem;
+    }
+    .container>article ol li {
+      color: #666;
     }
     </style>
   </head>
@@ -33,16 +36,48 @@
         <h1>tail {%=o.realfile%}</h1>
       </header>
       <article>
-        <pre id="content">{%=o.content%}</pre>
+        <ol id="content"></ol>
       </article>
     </div>
     <script>
-    const url = `ws://${location.host}/${location.pathname}`
+    const fd = {%=o.fd%}
+    const extname = '{%=o.extname%}'
+    const url = `ws://${location.host}${location.pathname}?fd=${fd}`
     const socket = new WebSocket(url)
     const content = document.getElementById('content')
 
+    const append = (data) => {
+      switch (extname) {
+        case '.log':
+        case '.txt':
+        default:
+          const lines = data.split("\n")
+
+          if (content.lastChild) {
+            const first = lines.shift()
+            content.lastChild.textContent += first
+
+            content.lastChild.style.display = null
+          }
+          const fragment = document.createDocumentFragment()
+          lines.forEach(line => {
+            const li = document.createElement('li')
+            li.textContent = line
+
+            if (!line) {
+              li.style.display = 'none'
+            }
+            fragment.appendChild(li)
+          })
+
+          content.appendChild(fragment)
+          break
+      }
+    }
+
+    append({%#JSON.stringify(o.content)%})
     socket.onmessage = (message) => {
-      content.textContent = message.data
+      append(message.data)
     }
     </script>
   </body>
