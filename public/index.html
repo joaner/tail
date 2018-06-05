@@ -22,12 +22,30 @@
     .container>header, .container>article {
       padding: .5rem 1rem;
     }
-    .container>article ol {
-      line-height: 1.8;
-      font-size: 1rem;
+    .driver-text {
+      border: 1px solid #DDD;
+      width: 100%;
     }
-    .container>article ol li {
+    .driver-text tr {
+      line-height: 18px;
+      font-size: 14px;
+    }
+    .driver-text tr:hover {
+      background-color: #ffffca;
+    }
+    .driver-text tr th {
+      color: #999;
+      font-weight: normal;
+      font-size: 12px;
+      width: 16px;
+      padding-left: 8px;
+      padding-right: 8px;
+      text-align: right;
+      border-right: 1px solid #DDD;
+    }
+    .driver-text tr td {
       color: #666;
+      padding-left: 8px;
     }
     </style>
   </head>
@@ -37,7 +55,9 @@
         <h1>tail {%=o.realfile%}</h1>
       </header>
       <article>
-        <ol id="content"></ol>
+        <table class="driver-text">
+          <tbody id="content"></tbody>
+        </table>
       </article>
     </div>
     <script>
@@ -51,22 +71,30 @@
         case 'text':
         default:
           const lines = data.split("\n")
-
+          let offset = 1
           if (content.lastChild) {
             const first = lines.shift()
             content.lastChild.textContent += first
 
             content.lastChild.style.display = null
+
+            offset = content.children.length
           }
           const fragment = document.createDocumentFragment()
-          lines.forEach(line => {
-            const li = document.createElement('li')
-            li.textContent = line
+          lines.forEach((line, key) => {
+            const row = document.createElement('tr')
+            const num = document.createElement('th')
+            num.textContent = offset + key
+            const txt = document.createElement('td')
+            txt.textContent = line
+
+            row.appendChild(num)
+            row.appendChild(txt)
 
             if (!line) {
-              li.style.display = 'none'
+              row.style.display = 'none'
             }
-            fragment.appendChild(li)
+            fragment.appendChild(row)
           })
 
           content.appendChild(fragment)

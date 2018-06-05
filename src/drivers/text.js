@@ -40,7 +40,6 @@ class TextDriver extends BaseDriver {
     const buffer = Buffer.alloc(MAX_READ_LENGTH)
     const length = fs.readSync(this.options.fd, buffer, 0, MAX_READ_LENGTH, null)
 
-    console.log(this.options.fd, length)
     return buffer.slice(0, length).toString('utf8')
   }
 
