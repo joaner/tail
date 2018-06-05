@@ -2,6 +2,7 @@
 <html>
   <head>
     <title>{%=o.title%}</title>
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=">
     <style>
     html, body {
       padding: 0;
@@ -40,16 +41,14 @@
       </article>
     </div>
     <script>
-    const fd = {%=o.fd%}
-    const extname = '{%=o.extname%}'
-    const url = `ws://${location.host}${location.pathname}?fd=${fd}`
+    const name = '{%=o.name%}'
+    const url= `ws://${location.host}{%=o.uri%}`
     const socket = new WebSocket(url)
     const content = document.getElementById('content')
 
     const append = (data) => {
-      switch (extname) {
-        case '.log':
-        case '.txt':
+      switch (name) {
+        case 'text':
         default:
           const lines = data.split("\n")
 
