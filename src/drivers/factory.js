@@ -1,7 +1,7 @@
 const url = require('url')
 const path = require('path')
 
-const TextDriver = require('./text')
+const FileDriver = require('./file')
 
 class DriverFactory {
   constructor(path) {

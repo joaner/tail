@@ -5,7 +5,7 @@ const BaseDriver = require('./base')
 const ROOT_PATH = process.env.ROOT_PATH || '/'
 const MAX_READ_LENGTH = 1000
 
-class TextDriver extends BaseDriver {
+class FileDriver extends BaseDriver {
   constructor(pathname, options = {}) {
     super()
 
@@ -19,7 +19,7 @@ class TextDriver extends BaseDriver {
   }
 
   getName() {
-    return 'text'
+    return 'file'
   }
 
   watch(cb) {
@@ -48,4 +48,4 @@ class TextDriver extends BaseDriver {
   }
 }
 
-module.exports = TextDriver
+module.exports = FileDriver
