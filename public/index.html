@@ -70,32 +70,8 @@
       switch (name) {
         case 'text':
         default:
-          const lines = data.split("\n")
-          let offset = 1
-          if (content.lastChild) {
-            const first = lines.shift()
-            content.lastChild.textContent += first
-
-            content.lastChild.style.display = null
-
-            offset = content.children.length
-          }
-          const fragment = document.createDocumentFragment()
-          lines.forEach((line, key) => {
-            const row = document.createElement('tr')
-            const num = document.createElement('th')
-            num.textContent = offset + key
-            const txt = document.createElement('td')
-            txt.textContent = line
-
-            row.appendChild(num)
-            row.appendChild(txt)
-
-            if (!line) {
-              row.style.display = 'none'
-            }
-            fragment.appendChild(row)
-          })
+          const format = new TextFormat(content)
+          const fragment = format.render(data)
 
           content.appendChild(fragment)
           break
