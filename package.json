@@ -24,7 +24,8 @@
   "homepage": "https://github.com/joaner/tail#readme",
   "devDependencies": {
     "babel-cli": "^6.26.0",
-    "babel-preset-env": "^1.7.0"
+    "babel-preset-env": "^1.7.0",
+    "webpack": "^4.12.0"
   },
   "dependencies": {
     "blueimp-tmpl": "^3.11.0",
